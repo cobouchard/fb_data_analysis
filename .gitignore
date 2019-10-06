@@ -2,6 +2,7 @@
 facebook-corentinbouchard_06102019/
 
 *.iml
-analyse/out/
-analyse/.idea/
+analyse/out/*
+analyse/.idea/*
+analyse/.idea/workspace.xml
 analyse/src/module-info.java
