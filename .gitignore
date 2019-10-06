@@ -1,0 +1,6 @@
+#data to analyse
+facebook-corentinbouchard_06102019/
+
+#intellij dir and files
+.idea/
+*.iml
