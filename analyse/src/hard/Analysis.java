@@ -1,13 +1,11 @@
 package hard;
 
+import java.io.*;
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 
 
 import org.json.simple.JSONArray;
@@ -53,7 +51,29 @@ public class Analysis {
             e.printStackTrace();
         }
 
+
+
         return map;
+    }
+
+    public static void writeInCSV(ArrayList<HashMap<LocalDate, Integer>> personnes)
+    {
+        //on cherche la date la plus petite (i.e. date de départ)
+
+
+        //on cherche la date la plus grande (i.e. date de fin)
+
+
+        BufferedWriter writer;
+
+        try {
+            writer = new BufferedWriter(new FileWriter("data.csv"));
+
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
@@ -66,3 +86,6 @@ public class Analysis {
 
     }
 }
+
+//https://www.baeldung.com/java-hashmap-sort
+//https://app.flourish.studio/@flourish/horserace/7#api-template-data-header
