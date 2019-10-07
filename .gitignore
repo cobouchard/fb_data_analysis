@@ -1,5 +1,7 @@
 #data to analyse
 facebook-corentinbouchard_06102019/
 
-
-analyse/src/module-info.java
+analyse/out
+analyse.iml
+*.iml
+.idea
