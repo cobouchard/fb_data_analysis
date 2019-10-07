@@ -16,7 +16,7 @@ import org.json.simple.parser.JSONParser;
 
 public class Analysis {
 
-    public static HashMap<LocalDate, Integer> onePersonData(String person)
+    public static HashMap<LocalDate, Integer> readOnePersonData(String person)
     {
         HashMap<LocalDate, Integer> map = new HashMap<>();
         //parcours du fichier
@@ -57,7 +57,7 @@ public class Analysis {
     }
 
     public static void main(String[] args) {
-        HashMap<LocalDate, Integer> map = onePersonData("../facebook-corentinbouchard_06102019/messages/inbox/YannRousseau_Yh-E59p1mQ/message_1.json");
+        HashMap<LocalDate, Integer> map = readOnePersonData("../facebook-corentinbouchard_06102019/messages/inbox/YannRousseau_Yh-E59p1mQ/message_1.json");
 
         for(HashMap.Entry<LocalDate, Integer> entry : map.entrySet())
         {
