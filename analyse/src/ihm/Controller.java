@@ -1,4 +1,4 @@
-package sample;
+package ihm;
 
 public class Controller {
 }
