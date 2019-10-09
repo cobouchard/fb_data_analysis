@@ -15,12 +15,13 @@ import org.json.simple.parser.JSONParser;
 public class Analysis {
     static final LocalDate debut = LocalDate.of(2012,9,1);
     static final LocalDate fin = LocalDate.of(2019,10,6);
+    static ArrayList<LocalDate> allDates = new ArrayList<>();
 
     public static Person readOnePersonData(String chemin, String nom)
     {
         Person p = new Person();
         HashMap<LocalDate, Integer> map = new HashMap<>();
-        map = initMap(map, debut.getYear(), debut.getMonthValue(), debut.getDayOfMonth());
+        map = initMap(map);
         //parcours du fichier
         JSONParser jsonParser = new JSONParser();
 
@@ -41,7 +42,6 @@ public class Analysis {
                     map.replace(dat, map.get(dat)+1 );
                 nb_messages++;
             }
-
 
             p.nb_messages = nb_messages;
         } catch (FileNotFoundException e) {
@@ -66,26 +66,31 @@ public class Analysis {
         return p;
     }
 
-    public static HashMap<LocalDate, Integer> initMap(HashMap<LocalDate, Integer> map, int an, int mois, int jours)
+    public static void initAllDates(int an, int mois, int jours)
     {
-        map.put(LocalDate.of(an,mois,jours),0);
-        if(fin.getYear() == an && fin.getMonthValue() == mois && fin.getDayOfMonth() == jours)
-            return map;
-
-        else
+        allDates.add(LocalDate.of(an, mois, jours));
+        if(! (fin.getYear() == an && fin.getMonthValue() == mois && fin.getDayOfMonth() == jours) )
         {
             if(UsefulFunc.jourDansMois(an, mois)==jours)
             {
                 jours=1;
                 if(mois==12)
-                    return initMap(map, ++an, 1, jours);
+                    initAllDates(++an, 1, jours);
 
                 else
-                    return initMap(map, an, ++mois, jours);
+                    initAllDates(an, ++mois, jours);
             }
             else
-                return initMap(map, an, mois, ++jours);
+                initAllDates(an, mois, ++jours);
         }
+
+    }
+
+    public static HashMap<LocalDate, Integer> initMap(HashMap<LocalDate, Integer> map)
+    {
+        for(LocalDate ld : allDates)
+            map.put(ld,0);
+        return map;
     }
 
     public static ArrayList<Person> readAllPersons()
@@ -109,7 +114,7 @@ public class Analysis {
         BufferedWriter writer;
 
         try {
-            writer = new BufferedWriter(new FileWriter("data.csv"));
+            writer = new BufferedWriter(new FileWriter("data.txt"));
             for(Person p : personnes)
             {
                 writer.write(p.nom + " nombre de messages : " + p.nb_messages + "\n");
@@ -121,9 +126,64 @@ public class Analysis {
         }
     }
 
+    public static void writeInCSV(ArrayList<Person> personnes)
+    {
+        BufferedWriter writer;
+
+        try {
+            writer = new BufferedWriter(new FileWriter("data.csv"));
+
+            //ligne 1
+            writer.write("Nom,");
+            for(int i=0; i!= allDates.size();i++)
+            {
+                LocalDate ld = allDates.get(i);
+
+                if(ld.getDayOfMonth()!=1 && ld.getDayOfMonth()!=15)
+                    continue;
+
+                writer.write(ld.getDayOfMonth() + "/" + ld.getMonthValue() + "/" + ld.getYear());
+                if(i!= allDates.size()-1)
+                    writer.write(',');
+            }
+            writer.write('\n'); //fin de ligne 1
+
+
+            for(Person p : personnes)
+            {
+                if(p.nb_messages<500)
+                    continue;
+
+                writer.write(p.nom+",");
+
+                int nb_messages=0;
+                for(int i=0; i!= allDates.size();i++)
+                {
+                    LocalDate ld = allDates.get(i);
+                    nb_messages += p.map.get(ld);
+
+                    if(ld.getDayOfMonth()==1 || ld.getDayOfMonth()==15)
+                    {
+                        writer.write(String.valueOf(nb_messages));
+                        if(i!= allDates.size()-1)
+                            writer.write(',');
+                    }
+                }
+
+                writer.write('\n');
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
+        initAllDates(debut.getYear(), debut.getMonthValue(), debut.getDayOfMonth());
         ArrayList<Person> persons = readAllPersons();
-        writeInText(persons);
+        writeInCSV(persons);
+        //writeInText(persons);
     }
 }
 
