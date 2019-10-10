@@ -12,7 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-public class Analysis {
+public abstract class Analysis {
     static final LocalDate debut = LocalDate.of(2012,9,1);
     static final LocalDate fin = LocalDate.of(2019,10,6);
     static ArrayList<LocalDate> allDates = new ArrayList<>();
@@ -109,81 +109,13 @@ public class Analysis {
         return persons;
     }
 
-    public static void writeInText(ArrayList<Person> personnes)
-    {
-        BufferedWriter writer;
 
-        try {
-            writer = new BufferedWriter(new FileWriter("data.txt"));
-            for(Person p : personnes)
-            {
-                writer.write(p.nom + " nombre de messages : " + p.nb_messages + "\n");
-            }
-
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void writeInCSV(ArrayList<Person> personnes)
-    {
-        BufferedWriter writer;
-
-        try {
-            writer = new BufferedWriter(new FileWriter("data.csv"));
-
-            //ligne 1
-            writer.write("Nom,");
-            for(int i=0; i!= allDates.size();i++)
-            {
-                LocalDate ld = allDates.get(i);
-
-                if(ld.getDayOfMonth()!=1 && ld.getDayOfMonth()!=15)
-                    continue;
-
-                writer.write(ld.getDayOfMonth() + "/" + ld.getMonthValue() + "/" + ld.getYear());
-                if(i!= allDates.size()-1)
-                    writer.write(',');
-            }
-            writer.write('\n'); //fin de ligne 1
-
-
-            for(Person p : personnes)
-            {
-                if(p.nb_messages<500)
-                    continue;
-
-                writer.write(p.nom+",");
-
-                int nb_messages=0;
-                for(int i=0; i!= allDates.size();i++)
-                {
-                    LocalDate ld = allDates.get(i);
-                    nb_messages += p.map.get(ld);
-
-                    if(ld.getDayOfMonth()==1 || ld.getDayOfMonth()==15)
-                    {
-                        writer.write(String.valueOf(nb_messages));
-                        if(i!= allDates.size()-1)
-                            writer.write(',');
-                    }
-                }
-
-                writer.write('\n');
-            }
-
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void main(String[] args) {
         initAllDates(debut.getYear(), debut.getMonthValue(), debut.getDayOfMonth());
         ArrayList<Person> persons = readAllPersons();
-        writeInCSV(persons);
-        //writeInText(persons);
+        Writing.writeInCSV(persons);
+        //Writing.writeInText(persons);
     }
 }
 
