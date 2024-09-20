@@ -102,6 +102,7 @@ public abstract class Analysis {
 
         for(String s : liste)
         {
+		//here you should update the path to your file downloaded from fb
             persons.add(readOnePersonData("../facebook-corentinbouchard_06102019/messages/inbox/"+s+"/message_1.json", s));
         }
 
